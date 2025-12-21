@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sorting Visualizer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <h1>Sorting Visualizer</h1>
+    <div class="tabs">
+      <button class="active">Insertion</button>
+      <button>Shell</button>
+      <button>Heap</button>
+    </div>
+    <div class="credit">
+        Made By <span class="name">Gikama</span>
+    <span class="full-name">
+        ang<span>gi</span> <span>ka</span>nsa rah<span>ma</span>
+    </span>
+    </div>
+  </header>
+
+    <section class="algo-info insertion">
+        <h2>Insertion Sort</h2>
+        <p>
+        Membangun array terurut satu per satu dengan menyisipkan elemen
+        ke posisi yang tepat di bagian kiri array.
+        </p>
+    </section>
+
+  <!-- MAIN -->
+  <main class="app">
+
+    <!-- CONTROL PANEL -->
+    <section class="panel controls">
+      <h2>Inputs</h2>
+
+      <label>Array Size</label>
+      <select>
+        <option>5</option>
+        <option>10</option>
+        <option>15</option>
+      </select>
+
+      <label>Layout</label>
+      <select>
+        <option>Bar</option>
+        <option>Array</option>
+      </select>
+
+      <label>Array Values (optional)</label>
+      <input type="text" placeholder="5, 6, 7, 2, 1" />
+
+      <div class="control-buttons">
+        <button class="btn">Run</button>
+        <button class="btn ghost">Reset</button>
+      </div>
+    </section>
+
+    <!-- VISUALIZATION -->
+    <section class="panel visual">
+      <div class="key-holder"></div>
+      <!-- contoh BAR -->
+      <div class="bar sorted" style="height: 120px;">5</div>
+      <div class="bar" style="height: 150px;">6</div>
+      <div class="bar compare" style="height: 180px;">7</div>
+      <div class="bar" style="height: 80px;">2</div>
+      <div class="bar" style="height: 60px;">1</div>
+    </section>
+
+  </main>
+
+  <!-- EXPLANATION -->
+  <footer class="panel explanation">
+    <p>
+      Highlighted green records to the left are always sorted.
+      We begin with the record in position 0 and move the next element
+      to its correct position.
+    </p>
+
+    <div class="stepper">
+      <button>⏮</button>
+      <button>◀</button>
+      <span>2 / 18</span>
+      <button>▶</button>
+      <button>⏭</button>
+    </div>
+  </footer>
+
+  <script src="algoritma.js"></script>
+</body>
+</html>
