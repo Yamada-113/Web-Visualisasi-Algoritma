@@ -1,6 +1,15 @@
-/* =====================
-   DOM ELEMENTS
-===================== */
+/**
+ * NOTE WHAT TO FIX/ADD:
+ * Setiap langkah tutorial yg dilakukan harus dijelaskan secara eksplisit (Insertion sort done)
+ * Deskripsi setiap sorting hrs dibuat eksplisit lgi
+ * Membuat AI yg membantu user untuk menjelaskan setiap langkah/proses pemamhaman algoritma (klo gk tepar awkoakwo)
+ * Hosting web (ini jga)
+ * Maybe UI bsa di improve lgi
+ */
+
+/**
+ * ELEMENT DOM NYA
+ */
 const tabs = document.querySelectorAll(".tabs button");
 const algoInfo = document.querySelector(".algo-info");
 const algoTitle = algoInfo.querySelector("h2");
@@ -8,6 +17,8 @@ const algoDesc = algoInfo.querySelector("p");
 
 const runBtn = document.querySelector(".btn");
 const resetBtn = document.querySelector(".btn.ghost");
+const playBtn = document.querySelector(".btn.play");
+const pauseBtn = document.querySelector(".btn.pause");
 
 const visual = document.querySelector(".visual");
 const explanationText = document.querySelector(".explanation p");
@@ -18,20 +29,24 @@ const stepCounter = document.querySelector(".stepper span");
 const sizeSelect = document.querySelector("select");
 const layoutSelect = document.querySelectorAll("select")[1];
 const arrayInput = document.querySelector('input[type="text"]');
-
-/* =====================
-   STATE
-===================== */
+const speedRange = document.getElementById("speedRange")
+const speedLabel = document.getElementById("speedLabel")
+/**
+ * STATE
+ */
 let currentAlgorithm = "insertion";
 let currentMode = "bar";
 let steps = [];
 let currentStep = 0;
 let isAnimating = false;
 let uid = 0;
+let autoPlay = false;
+let autotimer = null;
+let speed = 300;
 
-/* =====================
-   ALGORITHM META
-===================== */
+/**
+ * DESKRIPSI ALGORITMA
+ */
 const algoMeta = {
   insertion: {
     title: "Insertion Sort",
@@ -47,9 +62,9 @@ const algoMeta = {
   }
 };
 
-/* =====================
-   UTILITIES
-===================== */
+/**
+ * HANDLING ERROR USER GK BISA INPUT ANGKA KLO GK ADA KOMA
+ */
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 function generateArray(size) {
@@ -77,9 +92,9 @@ function parseArrayInput(text) {
   }));
 }
 
-/* =====================
-   RENDER VISUALIZATION
-===================== */
+/**
+ * RENDER DAN ANIMASI TAMPILAN BAR
+ */
 async function renderStep() {
   if (isAnimating) return;
   const step = steps[currentStep];
@@ -153,7 +168,7 @@ async function renderStep() {
   stepCounter.innerText = `${currentStep + 1} / ${steps.length}`;
 
   // Wait for animation to complete
-  await sleep(650);
+  await sleep(speed);
   isAnimating = false;
 }
 
@@ -228,6 +243,25 @@ resetBtn.onclick = () => {
   stepCounter.innerText = "0 / 0";
 };
 
+//auto-play button
+playBtn.onclick = async () => {
+  if (autoPlay || !steps.length) return;
+  autoPlay = true;
+
+  while (autoPlay && currentStep < steps.length - 1) {
+    currentStep++;
+    await renderStep();
+    await sleep(speed);
+  }
+
+  autoPlay = false;
+};
+
+pauseBtn.onclick = () => {
+  autoPlay = false;
+};
+
+
 // Stepper buttons
 stepperBtns[0].onclick = () => {
   // First step
@@ -261,16 +295,43 @@ stepperBtns[3].onclick = () => {
   }
 };
 
-/* =====================
-   INSERTION SORT
-===================== */
+speedRange.oninput = () => {
+  const rawValue = Number(speedRange.value);
+  const min = 10;
+  const max = 100;
+
+  // Hitung persentase kecepatan (10% = lambat, 90% = cepat)
+  const percent = Math.round(
+    ((rawValue - min) / (max - min)) * 80 + 10
+  );
+
+  // Label kategori
+  if (percent <= 35) {
+    speedLabel.innerText = `Lambat (${percent}%)`;
+  } else if (percent <= 65) {
+    speedLabel.innerText = `Normal (${percent}%)`;
+  } else {
+    speedLabel.innerText = `Cepat (${percent}%)`;
+  }
+
+  // Konversi ke delay animasi (ms)
+  // Semakin besar rawValue → semakin cepat → delay semakin kecil
+  // rawValue = 50  → speed = 900ms (lambat)
+  // rawValue = 800 → speed = 100ms (cepat)
+  speed = 1000 - (percent * 9)
+};
+
+
+/**
+ * ALGORITMA INSERTION SORT
+ */
 function insertionSortSteps(arr) {
   let a = arr.map(x => ({ ...x }));
   let s = [];
 
   s.push({
     array: [...a],
-    explanation: "Array awal sebelum sorting"
+    explanation: "Array awal sebelum proses insertion sort dimulai. Pada tahap ini, elemen pertama dianggap sudah terurut."
   });
 
   for (let i = 1; i < a.length; i++) {
@@ -281,7 +342,8 @@ function insertionSortSteps(arr) {
       array: [...a],
       keyId: key.id,
       compare: [a[j]?.id],
-      explanation: `Ambil key = ${key.value} dari index ${i}`
+      explanation: `Data pada indeks ke-${i} sedang diproses dalam pengurutan. Elemen berwarna kuning dengan nilai ${key.value} diambil sebagai key. Key ini akan digeser ke kiri hingga berada pada posisi yang benar.
+                    `
     });
 
     while (j >= 0 && a[j].value > key.value) {
@@ -299,7 +361,7 @@ function insertionSortSteps(arr) {
         array: visualArray,
         keyId: key.id,
         compare: [compareId],
-        explanation: `${compareValue} > ${key.value}, geser ke kanan`
+        explanation: `Key (${key.value}) dibandingkan dengan elemen di sebelah kirinya yang bernilai ${compareValue}. Karena elemen di kiri lebih besar, elemen tersebut digeser satu posisi ke kanan.`
       });
       
       j--;
@@ -311,22 +373,22 @@ function insertionSortSteps(arr) {
       array: [...a],
       keyId: key.id,
       sorted: a.slice(0, i + 1).map(x => x.id),
-      explanation: `Key ${key.value} ditempatkan di posisi ${j + 1}`
+      explanation: `Key dengan nilai ${key.value} ditempatkan pada posisi yang sesuai. Key dengan nilai ${key.value} ditempatkan pada posisi yang sesuai.`
     });
   }
 
   s.push({
     array: [...a],
     sorted: a.map(x => x.id),
-    explanation: "Array sudah terurut!"
+    explanation: "Seluruh elemen telah diproses. Array sekarang berada dalam kondisi terurut sepenuhnya."
   });
 
   return s;
 }
 
-/* =====================
-   SHELL SORT
-===================== */
+/**
+ * ALGORITMA SHELL SHORT
+ */
 function shellSortSteps(arr) {
   let a = arr.map(x => ({ ...x }));
   let s = [];
