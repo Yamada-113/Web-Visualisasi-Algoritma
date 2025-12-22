@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sorting Visualizer</title>
+  <title>Gikama | Sorting Visualizer</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -54,10 +54,16 @@
 
       <label>Array Values (optional)</label>
       <input type="text" placeholder="5, 6, 7, 2, 1" />
+      <label>Speed</label>
+      <input type="range" min="10" max="100" value="50" id="speedRange">
+      <span id="speedLabel">Normal (50%)</span>
+
 
       <div class="control-buttons">
         <button class="btn">Run</button>
         <button class="btn ghost">Reset</button>
+        <button class="btn play">Play</button>
+        <button class="btn pause ghost">Pause</button>
       </div>
     </section>
 
