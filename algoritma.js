@@ -1,13 +1,4 @@
 /**
- * NOTE WHAT TO FIX/ADD:
- * Setiap langkah tutorial yg dilakukan harus dijelaskan secara eksplisit (Insertion sort done)
- * Deskripsi setiap sorting hrs dibuat eksplisit lgi
- * Membuat AI yg membantu user untuk menjelaskan setiap langkah/proses pemamhaman algoritma (klo gk tepar awkoakwo)
- * Hosting web (ini jga)
- * Maybe UI bsa di improve lgi
- */
-
-/**
  * ELEMENT DOM NYA
  */
 const tabs = document.querySelectorAll(".tabs button");
